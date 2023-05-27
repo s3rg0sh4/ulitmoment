@@ -26,6 +26,10 @@ code {
   box-shadow: 0px 20px 100px rgba(0, 0, 0, 0.4);
   border-radius: 20px;
 }
+
+.shadow {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
 /*
 
 .textHead {
@@ -45,10 +49,6 @@ code {
   line-height: 30px;
 }
 
-.profileForm {
-  background: #EFEFEF;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
 
 .courseFormText {
   background: #EFEFEF;

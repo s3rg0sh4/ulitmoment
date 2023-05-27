@@ -1,22 +1,33 @@
-import React from 'react';
-import { Button, Form } from "react-bootstrap";
+import React, { useEffect } from 'react';
+import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { api } from '../api';
 import { useForm } from 'react-hook-form';
 import { Login } from '../types/auth';
 
 function LoginForm() {
-    const [login, res] = api.useLoginMutation();
+    useEffect(() => {
+        localStorage.removeItem('auth');
+    }, [])
+
+    const [login, result] = api.useLoginMutation();
 
     const { register, handleSubmit } = useForm<Login>({ defaultValues: { email: '', password: '' } })
     const navigate = useNavigate()
     const submitHandler = (data: Login) => {
-        login(data).then(res => res && navigate("/courses"))
+        login(data)
     }
+
+    useEffect(() => {
+        if (result.isSuccess) {
+            navigate("/courses")
+        }
+    }, [result.isSuccess])
+    
     return (
-        <div>
-            <Form onSubmit={handleSubmit(submitHandler)} style={{ backgroundColor: "#EFEFEF" }} className='p-3 mt-5 col-md-4 offset-md-4 align-self-center loginForm d-grid'>
-                <span className="p-1 mx-auto  textHead">Вход</span>
+        <Container className='d-grid'>
+            <Form onSubmit={handleSubmit(submitHandler)} className='p-3 mt-5 col-md-4 offset-md-4 align-self-center loginForm d-grid'>
+                <span className="p-1 mx-auto textHead">Вход</span>
                 <Form.Group className="p-1 col-md-10 offset-md-1 align-self-center" controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control {...register('email')} type="email" placeholder="Enter email" />
@@ -30,7 +41,7 @@ function LoginForm() {
                     Войти
                 </Button>
             </Form>
-        </div>
+        </Container>
 
     );
 }

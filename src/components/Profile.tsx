@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
-import {Button, Col, Image, Placeholder, Row} from "react-bootstrap";
+import React, { useState } from 'react';
+import { Button, Card, Col, Image, Placeholder, Row } from "react-bootstrap";
 // import ProfilePic from "../ProfilePic.jpg";
 import Container from "react-bootstrap/Container";
-import {useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { api } from '../api';
+import UserSettings from './UserSettings';
 // import UserSettings from "./UserSettings";
 
 function Profile() {
-    const {data: user, isSuccess, isUninitialized} = api.useGetUserQuery();
+    const { data: user, isSuccess, isUninitialized } = api.useGetUserQuery();
     // const name = "Амогус Импостер Мафиозович"
     const role = "Преподаватель"
     const workLocation = "Космический корабль"
@@ -20,18 +21,32 @@ function Profile() {
         <div>
             <Container className="profileForm p-3 mt-5 col-md-8 align-self-center d-grid">
                 <Row>
-                    <Col xs={2}>
-                        <Image alt='' src={"data:image/jpeg;base64," + user?.pic} width="150" height="200" thumbnail/>
+                    <Col xl={2} md={3} xs={4}>
+                        {user?.pic
+                            ? <Image alt='' src={"data:image/jpeg;base64," + user?.pic} width="150" height="200" thumbnail />
+                            : <Placeholder className='h-100 d-grid w-100' />
+                        }
                     </Col>
-                    <Col xs={10}>
-                        {!isUninitialized && isSuccess ? <h5>{user!.surname} {user!.name} {user!.patronymic}</h5> : <Placeholder xs={6}/>}
-                        <h5>Должность: {role}</h5>
-                        <h5>Место работы: {workLocation}</h5>
+                    <Col xl={10} md={9} xs={8}>
+                        {!isUninitialized && isSuccess
+                            ? <div className=''>
+                                <h5>{user!.fullname}</h5>
+                                <h5>{user!.role}</h5>
+                                <div className='mt-5'>
+                                    <UserSettings />
+                                </div>
+                            </div>
+                            : <Placeholder as={Card.Text} animation="glow" className='h-100 d-grid'>
+                                <Placeholder xs={7} />
+                                <Placeholder xs={6} />
+                                <Placeholder.Button className='mt-auto' variant="dark" xs={12} />
+                            </Placeholder>
+                        }
                     </Col>
                 </Row>
                 <Row>
                     <span>
-                        {aboutMe}
+                        {user?.about}
                     </span>
                 </Row>
                 {/* <UserSettings/> */}

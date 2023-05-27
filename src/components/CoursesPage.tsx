@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormControl, Row } from "react-bootstrap";
+import { Button, Col, Container, FormControl, Row } from "react-bootstrap";
 
 import CourseCard from "./CourseCard";
 import CourseCreate from "./CourseCreate";
@@ -20,7 +20,6 @@ function CoursesPage() {
                 setFiltered(courses)
             }
         }
-
     }, [filter])
 
 
@@ -32,25 +31,27 @@ function CoursesPage() {
 
 
     return (
-        <div className="col-md-10 offset-1 my-5">
+        <Container className='mt-3'>
             <Row>
-                <FormControl placeholder='Введите название курса' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-5" />
+                <Col md={9}>
+                    <FormControl placeholder='Найти курс' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
+                </Col>
+                <Col md={3} className='d-flex'>
+                    <div className='ms-auto'>
+                        <CourseCreate />
+                    </div>
+                </Col>
             </Row>
 
-            <CourseCreate />
 
-
-            <Row xs={12} md={3} xxl={4} className="g-5">
+            <Row xs={2} md={3} xl={4} xxl={6} className="gy-4">
                 {filtered.map((card) => (
 
                     <CourseCard key={card.id} pic={card.pic as File} title={card.name} about={card.about} id={card.id} />
 
                 ))}
             </Row>
-
-
-        </div>
-
+        </Container>
     );
 }
 

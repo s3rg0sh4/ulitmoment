@@ -11,8 +11,8 @@ interface CourseCardProps {
 function CourseCard({ id, pic, title, about }: CourseCardProps) {
     return (
         <Col>
-            <Card className="mx-auto h-100 profileForm">
-                <Card.Img height={150} variant="top" src={"data:image/jpeg;base64," + pic} className="p-0 col-md-0 offset-md-0" />
+            <Card className="mx-auto h-100 shadow">
+                <Card.Img height={150} variant="top" src={"data:image/jpeg;base64," + pic} />
                 <Card.Body className="h-100 d-grid">
                     <Card.Title>{title}</Card.Title>
                     <Card.Text>
