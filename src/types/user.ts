@@ -1,20 +1,23 @@
-export interface User {
+export interface User extends UserInfo {
     id: number,
     email: string,
     role: string,
-    about: string,
     fullname: string,
+}
+
+export interface UserInfo {
+    about: string,
+    phone: string,
     pic: File | string,
-
 }
 
-export interface Pupil extends User {
-    grade: string,
-}
+// export interface Pupil extends User {
+//     grade: string,
+// }
 
-export interface Teacher extends User {
-    position: string,
-}
+// export interface Teacher extends User {
+//     position: string,
+// }
 
 export interface UserModel {
     email: string,

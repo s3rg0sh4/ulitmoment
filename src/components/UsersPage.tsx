@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Container from "react-bootstrap/Container";
-import { Button, Col, Dropdown, FormControl, ListGroup, Row, Table } from "react-bootstrap";
+import { Button, Col, FormControl, ListGroup, Row, Table } from "react-bootstrap";
 import { User } from '../types/user';
 import { api } from '../api';
 import UserCreate from './UserCreate';
+import { useNavigate } from 'react-router-dom';
 // import UserCreate from "./UserCreate";
 
 function UsersPage() {
+    const navigate = useNavigate();
     const { data: users } = api.useUserListQuery();
 
     const rows = [{
@@ -23,7 +25,7 @@ function UsersPage() {
 
     useEffect(() => {
         if (users) {
-            if (filter != '') {
+            if (filter !== '') {
                 setFiltered(users.filter(user => user.fullname.toUpperCase().includes(filter.toUpperCase())))
             } else {
                 setFiltered(users)
@@ -43,7 +45,7 @@ function UsersPage() {
         <Container className="mt-3">
             <Row>
                 <Col md={8}>
-                    <FormControl placeholder='Поиск пользователя' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
+                    <FormControl placeholder='Найти пользователя' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
                 </Col>
                 <Col md={4} className='d-flex'>
                     <div className='ms-auto mb-3'>
@@ -76,7 +78,7 @@ function UsersPage() {
                             </td>
                             <td>
                                 <div className='d-flex'>
-                                    <Button variant="outline-dark" size='sm' className='mb-0 ms-auto'>
+                                    <Button variant="outline-dark" size='sm' className='mb-0 ms-auto' onClick={() => navigate(`/user/${user.id}`)}>
                                         Посмотреть
                                     </Button>
                                 </div>

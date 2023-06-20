@@ -13,14 +13,7 @@ function CourseCreate() {
 
     const [show, setShow] = useState(false);
     const submitHandler = (data: Course) => {
-        console.log(data)
-
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("about", data.about);
-        formData.append("pic", data.pic);
-
-        create(formData).then(() => {
+        create(data).then(() => {
             window.location.reload()
         })
 

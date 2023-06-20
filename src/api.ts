@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Course } from './types/course';
-import { User, UserModel } from './types/user';
+import { User, UserInfo, UserModel } from './types/user';
 import { Login } from './types/auth';
 import { roles } from './types/roles';
 import { url } from 'inspector';
-import { School } from './types/school';
+import { AddSchoolRequest, School } from './types/school';
+import { objectToFormData } from './helpers/objectToFormData';
 
 export const api = createApi({
     reducerPath: "api",
@@ -53,18 +54,51 @@ export const api = createApi({
                 return user;
             },
         }),
+        getUserById: builder.query<User, string>({
+            query: (id) => ({
+                url: `/user/getUserById?id=${id}`,
+                method: 'GET'
+            }),
+            transformResponse: (user: User) => {
+                switch (user.role) {
+                    case roles[0].value:
+                        user.role = roles[0].label
+                        break;
+                    case roles[1].value:
+                        user.role = roles[1].label
+                        break;
+                    case roles[2].value:
+                        user.role = roles[2].label
+                        break;
+                    case roles[3].value:
+                        user.role = roles[3].label
+                        break;
+                }
+
+                return user;
+            },
+        }),
+        updateUser: builder.mutation<void, UserInfo>({
+            query: (data) => ({
+                url: '/user',
+                method: 'POST',
+                body: objectToFormData(data),
+            })
+        }),
+
         courseList: builder.query<Course[], void>({
             query: () => ({
                 url: '/courses',
                 method: 'GET'
             }),
         }),
-        addCourse: builder.mutation<void, FormData>({
+        addCourse: builder.mutation<void, Course>({
             query: (data) => ({
                 url: '/course',
                 method: 'POST',
-                body: data,
-            })
+                body: objectToFormData(data),
+            }),
+
         }),
         userList: builder.query<User[], void>({
             query: () => ({
@@ -105,11 +139,17 @@ export const api = createApi({
                 method: 'GET',
             })
         }),
-        addSchool: builder.mutation<void, School>({
+        addSchool: builder.mutation<void, AddSchoolRequest>({
             query: (data) => ({
-                url: '/addschool',
+                url: 'school/addSchool',
                 method: 'POST',
                 body: data
+            })
+        }),
+        getSchool: builder.query<School, number>({
+            query: (id) => ({
+                url: `school?id=${id}`,
+                method: 'GET'
             })
         }),
     })

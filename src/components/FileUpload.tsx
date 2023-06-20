@@ -5,7 +5,7 @@ interface FileUploadProps {
     label: string
 }
 
-function FileUpload({label}: FileUploadProps) {
+function FileUpload({ label }: FileUploadProps) {
 
     const [files, setFiles] = useState<FileList | null>(null);
 
@@ -18,15 +18,13 @@ function FileUpload({label}: FileUploadProps) {
     }
 
     return (
-        <div>
-            <Form.Group controlId="formFileMultiple" className="">
-                <Form.Label>{label}</Form.Label>
-                <Form.Control type="file" multiple onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFiles(e.currentTarget.files)} />
-                <div className='d-grid'>
-                    <Button className="my-3" variant={"outline-primary"} onClick={clickHandler}>Загрузить</Button>
-                </div>
-            </Form.Group>
-        </div>
+        <Form.Group className="">
+            <Form.Label>{label}</Form.Label>
+            <Form.Control type="file" multiple onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFiles(e.currentTarget.files)} />
+            <div className='d-grid'>
+                <Button className="my-3" variant={"outline-primary"} onClick={clickHandler}>Загрузить</Button>
+            </div>
+        </Form.Group>
     );
 }
 

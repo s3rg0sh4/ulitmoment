@@ -14,14 +14,14 @@ function SchoolCreate() {
     const [show, setShow] = useState(false);
     const submitHandler = (data: School) => {
         post(data).then(() => {
-            window.location.reload()
+            // window.location.reload()
         });
     }
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     return (
         <div>
-            <Button variant="primary" onClick={handleShow}>
+            <Button variant="primary" onClick={handleShow} className='mb-3'>
                 Добавить школу
             </Button>
 
@@ -35,6 +35,16 @@ function SchoolCreate() {
                             <Form.Group>
                                 <Form.Label>Название</Form.Label>
                                 <Form.Control {...register("name")}/>
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.Label>Адрес</Form.Label>
+                                <Form.Control {...register("address")}/>
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.Label>Номер телефона</Form.Label>
+                                <Form.Control {...register("phone")}/>
                             </Form.Group>
 
                         </Stack>

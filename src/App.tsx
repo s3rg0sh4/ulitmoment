@@ -7,6 +7,8 @@ import Profile from './components/Profile';
 import LoginForm from './components/LoginForm';
 import UsersPage from './components/UsersPage';
 import SchoolsPage from './components/SchoolsPage';
+import CoursePage from './components/CoursePage';
+import UserPage from './components/UserPage';
 
 function App() {
   return (
@@ -18,8 +20,9 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/schools" element={<SchoolsPage />} />
+        <Route path="/course/:id" element={<CoursePage />} />
+        <Route path="/user/:id" element={<UserPage />} />
         {/*
-                <Route path="/course/:id" element={<Course/>}/>
                 
                 <Route path="*" element={<LoginForm/>}/> */}
       </Routes>

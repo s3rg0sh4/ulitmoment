@@ -5,11 +5,13 @@ import Container from "react-bootstrap/Container";
 import { useForm } from "react-hook-form";
 import { api } from '../api';
 import UserSettings from './UserSettings';
+import { useParams } from 'react-router-dom';
 
-function Profile() {
-    const { data: user, isSuccess, isUninitialized } = api.useGetUserQuery();
+function UserPage() {    
+    const { id } = useParams();
 
 
+    const { data: user, isSuccess, isUninitialized } = api.useGetUserByIdQuery(id!);
 
     return (
         <div>
@@ -27,27 +29,22 @@ function Profile() {
                                 <h5>{user!.fullname}</h5>
                                 <h5>{user!.role}</h5>
                                 <h6>{user!.phone}</h6>
-                                <div className='mt-5'>
-                                    <UserSettings userInfo={user} />
-                                </div>
                             </div>
                             : <Placeholder as={Card.Text} animation="glow" className='h-100 d-grid'>
                                 <Placeholder xs={6} />
                                 <Placeholder xs={4} />
-                                <Placeholder.Button className='mt-auto' variant="dark" xs={4} />
                             </Placeholder>
                         }
                     </Col>
                 </Row>
                 <Row>
-                    <span>
+                    <span className='mt-3'>
                         {user?.about}
                     </span>
                 </Row>
-                {/* <UserSettings/> */}
             </Container>
         </div>
     );
 }
 
-export default Profile;
+export default UserPage;
