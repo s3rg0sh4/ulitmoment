@@ -16,6 +16,7 @@ function UserSettings({ userInfo }: UserSettingsProps) {
     register('pic');
 
     const submitHandler = (data: UserInfo) => {
+        data.pic = data.pic ? data.pic : "";
         update(data).then(() => {
             // window.location.reload()
         })

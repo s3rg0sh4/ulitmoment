@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Container from "react-bootstrap/Container";
-import { Accordion, Button, Col, Dropdown, DropdownButton, Form, FormText, Offcanvas, Row, Stack, Table } from "react-bootstrap";
+import { Accordion, Button, Col, Dropdown, DropdownButton, Form, FormControl, FormText, Offcanvas, Row, Stack, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { api } from '../api';
+import { AddPupil } from '../types/course';
+import UsersPage from './UsersPage';
+import { User } from '../types/user';
 
 function CoursePage() {
+    const { id } = useParams()
+
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -11,8 +17,6 @@ function CoursePage() {
     const handleShow = () => setShow(true);
 
     const [files, setFiles] = useState<File | null>(null);
-
-    const { id } = useParams()
 
     const [card, setCard] = useState();
 
@@ -32,35 +36,36 @@ function CoursePage() {
         scores.push({ subject: `Тест ${i + 1}`, score: Math.floor(i * 12 % 5 + 1) })
     }
 
-    const backgroundColor = (score: number) => {
-        switch (score) {
-            case 1:
-            case 2:
-                return 'danger'
-            case 3:
-                return 'warning'
-            case 4:
-            case 5:
-                return "success"
-            default:
-                return "white"
-        }
-    }
+    // const backgroundColor = (score: number) => {
+    //     switch (score) {
+    //         case 1:
+    //         case 2:
+    //             return 'danger'
+    //         case 3:
+    //             return 'warning'
+    //         case 4:
+    //         case 5:
+    //             return "success"
+    //         default:
+    //             return "white"
+    //     }
+    // }
 
     return (
 
         <div>
             <Container>
-                {/* <h3 className="text-center my-5" href="course">{!loading && card.title}</h3> */}
+                {/* <h3 className="text-center my-5">{!loading && }</h3> */}
             </Container>
             <Container className="mt-3" >
                 <Row className="mt-3">
                     <div className="d-flex justify-content-between">
-                        <Button>Тема {7}</Button>
-                        <Button variant="primary" onClick={handleShow}>
-                            Оценки
-                        </Button>
-                        <Button>Тема {9}</Button>
+                        {/* <Button>Предыдущее задание</Button> */}
+                        <PupilsModal id={id!} />
+                        
+                        <AddPupilModal id={id!} />
+
+                        {/* <Button>Следующее задание</Button> */}
                     </div>
                 </Row>
                 <Row className="mt-3">
@@ -116,22 +121,56 @@ function CoursePage() {
                     </Stack>
                 </Row>
             </Container>
+        </div>
+    );
+}
 
-            <Offcanvas placement={"end"} show={show} onHide={handleClose}>
+export default CoursePage;
+
+const PupilsModal = ({ id }: { id: string }) => {
+    const { data: users } = api.usePupilsQuery(id);
+
+    const [filter, setFilter] = useState('');
+    const [filtered, setFiltered] = useState<User[]>([]);
+
+    useEffect(() => {
+        if (users) {
+            setFiltered(users);
+        }
+    }, [users])
+
+    const [showPupilAdd, setShowPupilAdd] = useState(false);
+
+    return (
+        <div>
+            <Button variant="primary" onClick={() => setShowPupilAdd(true)}>
+                Ученики
+            </Button>
+            <Offcanvas placement={"start"} show={showPupilAdd} onHide={() => setShowPupilAdd(false)}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Оценки</Offcanvas.Title>
+                    <Offcanvas.Title>Ученики</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    <Table>
+                    <Row>
+                        <div>
+                            <FormControl placeholder='Найти пользователя' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
+                        </div>
+                    </Row>
+                    <Table className="table-light " responsive hover>
+                        <thead>
+                            <tr>
+                                <th scope='col'>Ученик</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            {scores.map((score, index) => (
-                                <tr key={index}>
-                                    <td className="text-center align-middle">{score.subject}</td>
-                                    <td
-                                        className={`text-center text-white`}>
-                                        <h5 className={`bg-${backgroundColor(score.score)} p-1 m-0`}>
-                                            {score.score}
-                                        </h5>
+                            {filtered.map(user => (
+                                <tr key={user.id}>
+                                    <td>
+                                        <div>
+                                            <div className='d-flex'>
+                                                <p className='fw-bold my-auto'>{user.fullname}</p>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -140,7 +179,103 @@ function CoursePage() {
                 </Offcanvas.Body>
             </Offcanvas>
         </div>
-    );
+    )
 }
 
-export default CoursePage;
+const AddPupilModal = ({ id }: { id: string }) => {
+    const { data: users } = api.useUserListQuery();
+
+    const [filter, setFilter] = useState('');
+    const [filtered, setFiltered] = useState<User[]>([]);
+    const [addPupil, res] = api.useAddPupilMutation();
+
+    useEffect(() => {
+        if (users) {
+            setFiltered(users.filter(user => user.role.includes("Ученик")));
+        }
+    }, [users])
+
+    const handlePupilAdd = (pupilId: number) => {
+        if (id) {
+            const add = {
+                id: Number(id),
+                pupilId: pupilId
+            }
+            addPupil(add)
+        }
+    }
+    const [showPupilAdd, setShowPupilAdd] = useState(false);
+
+    return (
+        <div>
+            <Button variant="primary" onClick={() => setShowPupilAdd(true)}>
+                Добавить ученика
+            </Button>
+            <Offcanvas placement={"end"} show={showPupilAdd} onHide={() => setShowPupilAdd(false)}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Добавить ученика на курс</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Row>
+                        <div>
+                            <FormControl placeholder='Найти пользователя' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
+                        </div>
+                    </Row>
+                    <Table className="table-light " responsive hover>
+                        <thead>
+                            <tr>
+                                <th scope='col'>Ученик</th>
+                                <th scope='col'></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.map(user => (
+                                <tr key={user.id}>
+                                    <td>
+                                        <div>
+                                            <div className='d-flex'>
+                                                <p className='fw-bold my-auto'>{user.fullname}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className='d-flex'>
+                                            <Button variant="outline-dark" size='sm' className='mb-0 ms-auto' onClick={() => handlePupilAdd(user.id)}>
+                                                Добавить
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </Offcanvas.Body>
+            </Offcanvas>
+        </div>
+    )
+}
+
+
+
+{/* <Offcanvas placement={"start"} show={show} onHide={handleClose}>
+    <Offcanvas.Header closeButton>
+        <Offcanvas.Title>Ученики</Offcanvas.Title>
+    </Offcanvas.Header>
+    <Offcanvas.Body>
+        <Table>
+            <tbody>
+                {scores.map((score, index) => (
+                    <tr key={index}>
+                        <td className="text-center align-middle">{score.subject}</td>
+                        <td
+                            className={`text-center text-white`}>
+                            <h5 className={`bg-${backgroundColor(score.score)} p-1 m-0`}>
+                                {score.score}
+                            </h5>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </Table>
+    </Offcanvas.Body>
+</Offcanvas> */}

@@ -7,17 +7,14 @@ import UserCreate from './UserCreate';
 import { useNavigate } from 'react-router-dom';
 // import UserCreate from "./UserCreate";
 
-function UsersPage() {
+interface Props {
+    role?: string,
+    search?: boolean
+}
+
+function UsersPage({ role, search }: Props) {
     const navigate = useNavigate();
     const { data: users } = api.useUserListQuery();
-
-    const rows = [{
-        img: "",
-        fullName: "",
-        school: "",
-        grade: "",
-        id: ""
-    }]
 
     // const [users, setUsers] = useState<User[]>([])
     const [filter, setFilter] = useState('')
@@ -31,28 +28,36 @@ function UsersPage() {
                 setFiltered(users)
             }
         }
-
     }, [filter])
 
 
     useEffect(() => {
         if (users) {
-            setFiltered(users);
+            if (role) {
+                setFiltered(users.filter(user => user.role.includes(role)));
+            } else {
+                setFiltered(users);
+            }
         }
     }, [users])
 
     return (
         <Container className="mt-3">
-            <Row>
-                <Col md={8}>
+            {search
+                ? <Row>
                     <FormControl placeholder='Найти пользователя' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
-                </Col>
-                <Col md={4} className='d-flex'>
-                    <div className='ms-auto mb-3'>
-                        <UserCreate />
-                    </div>
-                </Col>
-            </Row>
+                </Row>
+                : <Row>
+                    <Col md={8}>
+                        <FormControl placeholder='Найти пользователя' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
+                    </Col>
+                    <Col md={4} className='d-flex'>
+                        <div className='ms-auto mb-3'>
+                            <UserCreate />
+                        </div>
+                    </Col>
+                </Row>
+            }
             <Table className="table-light " responsive hover>
                 <thead>
                     <tr>

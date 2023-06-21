@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Course } from './types/course';
+import { AddPupil, Course } from './types/course';
 import { User, UserInfo, UserModel } from './types/user';
-import { Login } from './types/auth';
+import { Login, Register } from './types/auth';
 import { roles } from './types/roles';
 import { url } from 'inspector';
 import { AddSchoolRequest, School } from './types/school';
@@ -20,6 +20,17 @@ export const api = createApi({
     }),
 
     endpoints: (builder) => ({
+        setPassword: builder.mutation<boolean, Login>({
+            query: (data) => ({
+                url: 'user/setPassword',
+                method: 'POST',
+                body: data
+            }),
+            onQueryStarted: async ({ email, password }) => {//Buffer.from(str, 'base64') andbuf.toString('base64')
+                localStorage.setItem('auth', btoa(email + ":" + password))
+            }
+        }),
+
         login: builder.mutation<boolean, Login>({
             query: (data) => ({
                 url: '/auth',
@@ -99,6 +110,19 @@ export const api = createApi({
                 body: objectToFormData(data),
             }),
 
+        }),
+        pupils: builder.query<User[], string>({
+            query: (id) => ({
+                url: `/course/pupils?id=${id}`,
+                method: 'GET'
+            }),
+        }),
+        addPupil: builder.mutation<void, AddPupil>({
+            query: (data) => ({
+                url: '/course/addPupil',
+                method: 'POST',
+                body: data,
+            }),
         }),
         userList: builder.query<User[], void>({
             query: () => ({

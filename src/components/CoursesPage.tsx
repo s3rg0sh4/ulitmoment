@@ -37,7 +37,7 @@ function CoursesPage() {
                     <FormControl placeholder='Найти курс' value={filter} onChange={(e) => setFilter(e.target.value)} className="mb-3" />
                 </Col>
                 <Col md={3} className='d-flex'>
-                    <div className='ms-auto'>
+                    <div className='ms-auto mb-3'>
                         <CourseCreate />
                     </div>
                 </Col>

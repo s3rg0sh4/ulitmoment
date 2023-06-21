@@ -60,7 +60,6 @@ function UserCreate() {
                                     />
                                 ))}
                             </div>
-
                         </Stack>
                     </Modal.Body>
                     <Modal.Footer>

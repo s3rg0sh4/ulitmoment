@@ -4,3 +4,8 @@ export interface Course {
     about : string,
     pic: File | string
 }
+
+export interface AddPupil {
+    id: number,
+    pupilId: number
+}

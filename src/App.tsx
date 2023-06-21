@@ -9,6 +9,7 @@ import UsersPage from './components/UsersPage';
 import SchoolsPage from './components/SchoolsPage';
 import CoursePage from './components/CoursePage';
 import UserPage from './components/UserPage';
+import RegisterForm from './components/RegisterForm';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/schools" element={<SchoolsPage />} />
         <Route path="/course/:id" element={<CoursePage />} />

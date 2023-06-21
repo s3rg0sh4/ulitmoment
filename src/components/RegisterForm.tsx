@@ -3,19 +3,19 @@ import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { api } from '../api';
 import { useForm } from 'react-hook-form';
-import { Login } from '../types/auth';
+import { Login, Register } from '../types/auth';
 
-function LoginForm() {
+function RegisterForm() {
     useEffect(() => {
         localStorage.removeItem('auth');
     }, [])
 
-    const [login, result] = api.useLoginMutation();
+    const [login, result] = api.useSetPasswordMutation();
 
-    const { register, handleSubmit } = useForm<Login>({ defaultValues: { email: '', password: '' } })
+    const { register, handleSubmit, watch } = useForm<Register>({ defaultValues: { email: '', password: '', confirmPassword: '' } })
     const navigate = useNavigate()
-    const submitHandler = (data: Login) => {
-        login(data)
+    const submitHandler = (data: Register) => {
+        login({email: data.email, password: data.password})
     }
 
     useEffect(() => {
@@ -23,7 +23,7 @@ function LoginForm() {
             navigate("/courses")
         }
     }, [result.isSuccess])
-    
+
     return (
         <Container className='d-grid'>
             <Form onSubmit={handleSubmit(submitHandler)} className='p-3 mt-5 col-md-4 offset-md-4 align-self-center loginForm d-grid'>
@@ -37,12 +37,22 @@ function LoginForm() {
                     <Form.Label>Пароль</Form.Label>
                     <Form.Control {...register('password')} type="password" />
                 </Form.Group>
+
+                <Form.Group className="p-1 col-md-10 offset-md-1 align-self-center" controlId="formBasicPassword">
+                    <Form.Label>Повторите пароль</Form.Label>
+                    <Form.Control type="password"
+                        {...register("confirmPassword", {
+                            required: true,
+                            validate: (val: string) => watch("password") === val || "Пароли не совпадают"
+                        })} />
+                </Form.Group>
+
                 <Button className="px-3 mt-3 mx-auto " type="submit">
                     Войти
                 </Button>
             </Form>
         </Container>
     );
-}
+};
 
-export default LoginForm;
+export default RegisterForm;
